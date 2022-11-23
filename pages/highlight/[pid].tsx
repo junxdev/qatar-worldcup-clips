@@ -21,12 +21,10 @@ export default function Highlight() {
 
   useEffect(() => {
     (async () => {
-      var x = await fetch(`/naver/video/${pid}?fields=all`).then((r) =>
+      var x = await fetch(`/video/${pid}?fields=all`).then((r) =>
         r.json()
       );
-      setUrl(
-        `https://apis.naver.com/rmcnmv/rmcnmv/vod/play/v2.0/${x.result.masterVid}?key=${x.result.inkey}`
-      );
+      setUrl(`/streaming/${x.result.masterVid}?key=${x.result.inkey}`);
       setTitle(x.result.title);
       var t = new Date(x.result.gameDateTime);
       setGameDateTime(
@@ -54,7 +52,7 @@ export default function Highlight() {
         </Link>
         <h1>{title}</h1>
         <p>{gameDateTime}</p>
-        <Player url={url} />;
+        {url && <Player url={url} />}
       </main>
     </div>
   );

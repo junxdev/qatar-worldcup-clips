@@ -7,33 +7,31 @@ type Props = {
 
 export default function Player({ url }: Props) {
   const [title, setTitle] = useState<string>("");
-  const video = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     (async () => {
-      try {
-        var x = await fetch(url).then((response) => response.json());
-        setTitle(x.meta.subject);
-        renderVideo(x.streams[0].videos[3].source);
-      } catch (error) {
-        // TF, SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
-        // console.log(error);
-      }
+      var x = await fetch(url).then((response) => response.json());
+      setTitle(x.meta.subject);
+      renderVideo(x.streams[0].videos[3].source);
     })();
   }, [url]);
 
   function renderVideo(s: string) {
-    if (!video.current) return;
+    if (!videoRef.current) return;
+    
     if (Hls.isSupported()) {
       var hls = new Hls();
       hls.loadSource(s);
-      hls.attachMedia(video.current!);
-    } else if (video.current!.canPlayType("application/vnd.apple.mpegurl")) {
-      video.current!.src = s;
+      hls.attachMedia(videoRef.current!);
+    } else if (videoRef.current!.canPlayType("application/vnd.apple.mpegurl")) {
+      videoRef.current!.src = s;
+    } else {
+      console.error(
+        "This is an old browser that does not support MSE https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API"
+      );
     }
   }
 
-  return (
-      <video ref={video} controls width="100%"></video>
-  );
+  return <video ref={videoRef} controls width="100%"></video>;
 }
