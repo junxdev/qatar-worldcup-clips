@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Player from "../../components/player";
 import styles from "../../styles/Home.module.css";
+import { parseTitle } from "../../utils/parser";
 
 const options: Intl.DateTimeFormatOptions = {
   weekday: "long",
@@ -21,11 +22,9 @@ export default function Highlight() {
 
   useEffect(() => {
     (async () => {
-      var x = await fetch(`/video/${pid}?fields=all`).then((r) =>
-        r.json()
-      );
+      var x = await fetch(`/video/${pid}?fields=all`).then((r) => r.json());
       setUrl(`/streaming/${x.result.masterVid}?key=${x.result.inkey}`);
-      setTitle(x.result.title);
+      setTitle(parseTitle(x.result.title));
       var t = new Date(x.result.gameDateTime);
       setGameDateTime(
         `경기시간: ${t.toLocaleDateString(

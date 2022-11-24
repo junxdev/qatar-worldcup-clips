@@ -1,47 +1,24 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Video, VideoInfo } from "../domains/video";
 import styles from "../styles/Home.module.css";
-
-const threeHour: number = 3 * 60 * 60 * 1000;
-
-class Video {
-  id: string;
-  title: string;
-  produceDateTime: Date;
-
-  constructor(id: string, title: string, produceDateTime: number) {
-    this.id = id;
-    this.title = title;
-    this.produceDateTime = new Date(
-      new Date(produceDateTime).getTime() - threeHour
-    );
-  }
-
-  public get date(): string {
-    return this.produceDateTime.toLocaleDateString("ko-KR");
-  }
-}
+import { parseVideo } from "../utils/parser";
 
 const listUrl =
   "/video/lists/total?upperCategoryId=event&categoryId=qatar2022&page=1&pageSize=1000&sort=date&themeType=type&themeCode=2&fields=worldcup";
 
 export default function Home() {
-  const [videos, setVideos] = useState<Array<Video>>([]);
+  const [videos, setVideos] = useState<Array<VideoInfo>>([]);
 
   useEffect(() => {
     (async () => {
       var x = await fetch(listUrl).then((response) => response.json());
-      setVideos(
-        x.result.videos
-          .filter(
-            (v: any) =>
-              v.title.startsWith("[KBS") && v.title.endsWith("하이라이트")
-          )
-          .map(
-            (v: any) => new Video(v.sportsVideoId, v.title, v.produceDateTime)
-          )
+      var vs = x.result.videos.map(
+        (v: any) =>
+          new Video(v.sportsVideoId, v.title, v.produceDateTime, v.playTime)
       );
+      setVideos(parseVideo(vs));
     })();
   }, []);
 
@@ -58,13 +35,16 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>2022 카타르 월드컵 하이라이트 모음</h1>
-        <p className={styles.description}>노스포일러를 위해 KBS 영상만 제공됩니다 - 2022. 11. 23.</p>
+        <p className={styles.description}>
+          노스포일러를 위해 KBS 영상만 제공됩니다 - 2022. 11. 23.
+        </p>
         <div className={styles.grid}>
           {videos.map((v) => (
-            <Link key={v.id} href={`/highlight/${v.id}`}>
+            <Link key={v.data.id} href={`/highlight/${v.data.id}`}>
               <div className={styles.card}>
                 <p>{v.date}</p>
                 <h2>{v.title}</h2>
+                <p>{v.playTime}</p>
               </div>
             </Link>
           ))}

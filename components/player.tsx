@@ -13,13 +13,13 @@ export default function Player({ url }: Props) {
     (async () => {
       var x = await fetch(url).then((response) => response.json());
       setTitle(x.meta.subject);
-      renderVideo(x.streams[0].videos[3].source);
+      renderVideo(x.streams[0].videos.filter((v:any) => v.encodingOption.name == "1080P")[0].source);
     })();
   }, [url]);
 
   function renderVideo(s: string) {
     if (!videoRef.current) return;
-    
+
     if (Hls.isSupported()) {
       var hls = new Hls();
       hls.loadSource(s);
