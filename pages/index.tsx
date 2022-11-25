@@ -1,3 +1,4 @@
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { VideoData } from "../domains/video";
@@ -19,8 +20,11 @@ export default function Home(props: Props) {
           content="Watch 2022 Qatar World Cup clips without any spoiler"
         />
         <meta property="og:title" content="NoSpoCup" />
-        <meta property="og:url" content="https://nospocup.vercel.app"/>
-        <meta property="og:description" content="스포일러 없는 제목으로 카타르 월드컵 하이라이트를 더 재밌게!"/>
+        <meta property="og:url" content="https://nospocup.vercel.app" />
+        <meta
+          property="og:description"
+          content="스포일러 없는 제목으로 카타르 월드컵 하이라이트를 더 재밌게!"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -45,7 +49,12 @@ export default function Home(props: Props) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ res }: GetServerSidePropsContext) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=60, stale-while-revalidate=3600"
+  );
+
   return {
     props: { videos: await getVideos() } as Props,
   };

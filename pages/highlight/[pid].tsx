@@ -19,7 +19,7 @@ export default function Highlight({
   title,
   gameDateTime,
 }: VideoStreamingData) {
-  const router = useRouter()
+  const router = useRouter();
 
   const t = new Date(gameDateTime);
   const localeGameDateTime = `경기시간: ${t.toLocaleDateString(
@@ -36,8 +36,14 @@ export default function Highlight({
         <title>{`NoSpoCup: ${title}`}</title>
         <meta name="description" content={`${title}(${gameDateTime})`} />
         <meta property="og:title" content={`${title}(${gameDateTime})`} />
-        <meta property="og:url" content={`https://nospocup.vercel.app${router.asPath}`}/>
-        <meta property="og:description" content="스포일러 없는 제목으로 카타르 월드컵 하이라이트를 더 재밌게!"/>
+        <meta
+          property="og:url"
+          content={`https://nospocup.vercel.app${router.asPath}`}
+        />
+        <meta
+          property="og:description"
+          content="스포일러 없는 제목으로 카타르 월드컵 하이라이트를 더 재밌게!"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       ``
@@ -55,7 +61,13 @@ export default function Highlight({
 
 export async function getServerSideProps({
   query: { pid },
+  res,
 }: GetServerSidePropsContext) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=600, stale-while-revalidate=3600"
+  );
+  
   return {
     props: await getVideoStreaming(pid as string),
   };
