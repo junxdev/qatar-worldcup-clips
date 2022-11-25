@@ -1,4 +1,4 @@
-import { VideoInfo } from "../domains/video";
+import { VideoData, VideoMatchData } from "../domains/video";
 
 const countries = [
   "카타르",
@@ -69,8 +69,8 @@ function filterHighlight(videos: any) {
     .filter((v: any) => /하이라이트|H\\L/g.test(v.title));
 }
 
-function convertToVideoInfo(videos: any) {
-  var result: Array<VideoInfo> = [];
+function convertToVideoMatchData(videos: any) {
+  var result: Array<VideoMatchData> = [];
 
   videos.forEach((v: any) => {
     var c = findCountries(
@@ -79,7 +79,7 @@ function convertToVideoInfo(videos: any) {
     if (c.length != 2) return;
 
     result.push(
-      new VideoInfo(
+      new VideoMatchData(
         findBroadcast(v.title),
         c,
         findHalf(v.title),
@@ -92,9 +92,9 @@ function convertToVideoInfo(videos: any) {
   return result;
 }
 
-export function parseVideo(videos: any) {
+export function parseVideo(videos: VideoData[]) {
   var v2 = filterHighlight(videos);
-  var v3 = convertToVideoInfo(v2);
+  var v3 = convertToVideoMatchData(v2);
   return v3;
 }
 

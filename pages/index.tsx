@@ -1,27 +1,15 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Video, VideoInfo } from "../domains/video";
+import { VideoData } from "../domains/video";
 import styles from "../styles/Home.module.css";
 import { parseVideo } from "../utils/parser";
+import { getVideos } from "./api/video";
 
-const listUrl =
-  "/video/lists/total?upperCategoryId=event&categoryId=qatar2022&page=1&pageSize=1000&sort=date&themeType=type&themeCode=2&fields=worldcup";
+type Props = {
+  videos: VideoData[];
+};
 
-export default function Home() {
-  const [videos, setVideos] = useState<Array<VideoInfo>>([]);
-
-  useEffect(() => {
-    (async () => {
-      var x = await fetch(listUrl).then((response) => response.json());
-      var vs = x.result.videos.map(
-        (v: any) =>
-          new Video(v.sportsVideoId, v.title, v.produceDateTime, v.playTime)
-      );
-      setVideos(parseVideo(vs));
-    })();
-  }, []);
-
+export default function Home(props: Props) {
   return (
     <div className={styles.container}>
       <Head>
@@ -30,6 +18,9 @@ export default function Home() {
           name="description"
           content="Watch 2022 Qatar World Cup clips without any spoiler"
         />
+        <meta property="og:title" content="NoSpoCup" />
+        <meta property="og:url" content="https://nospocup.vercel.app"/>
+        <meta property="og:description" content="스포일러 없는 제목으로 카타르 월드컵 하이라이트를 더 재밌게!"/>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -39,8 +30,8 @@ export default function Home() {
           스포일러 없는 제목으로 하이라이트를 더 재밌게!
         </p>
         <div className={styles.grid}>
-          {videos.map((v) => (
-            <Link key={v.data.id} href={`/highlight/${v.data.id}`}>
+          {parseVideo(props.videos).map((v) => (
+            <Link key={v.id} href={`/highlight/${v.id}`}>
               <div className={styles.card}>
                 <p>{v.date}</p>
                 <h2>{v.title}</h2>
@@ -52,4 +43,10 @@ export default function Home() {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  return {
+    props: { videos: await getVideos() } as Props,
+  };
 }

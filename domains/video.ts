@@ -1,45 +1,45 @@
+export type VideoData = {
+  sportsVideoId: string;
+  title: string;
+  produceDateTime: number;
+  playTime: string;
+};
+
+export type VideoStreamingData = {
+  url: string;
+  title: string;
+  gameDateTime: string;
+};
+
 const threeHour: number = 3 * 60 * 60 * 1000;
 
-export class Video {
-  id: string;
-  title: string;
-  produceDateTime: Date;
-  playTime: string;
-
-  constructor(
-    id: string,
-    title: string,
-    produceDateTime: number,
-    playTime: string
-  ) {
-    this.id = id;
-    this.title = title;
-    this.produceDateTime = new Date(
-      new Date(produceDateTime).getTime() - threeHour
-    );
-    this.playTime = playTime;
-  }
-}
-
-export class VideoInfo {
+export class VideoMatchData {
   broadcast?: string;
   countries: Array<string>;
   half?: string;
   group?: string;
-  data: Video;
+  id: string;
+  originalTitle: string;
+  produceDateTime: Date;
+  playTime: string;
 
   constructor(
     broadcast: string | undefined,
     countries: Array<string>,
     half: string | undefined,
     group: string | undefined,
-    data: Video
+    data: VideoData
   ) {
     this.broadcast = broadcast;
     this.countries = countries;
     this.half = half;
     this.group = group;
-    this.data = data;
+    this.id = data.sportsVideoId;
+    this.originalTitle = data.title;
+    this.produceDateTime = new Date(
+      new Date(data.produceDateTime).getTime() - threeHour
+    );
+    this.playTime = data.playTime;
   }
 
   public get title() {
@@ -55,9 +55,6 @@ export class VideoInfo {
   }
 
   public get date(): string {
-    return this.data.produceDateTime.toLocaleDateString("ko-KR");
-  }
-  public get playTime(): string {
-    return this.data.playTime;
+    return this.produceDateTime.toLocaleDateString("ko-KR");
   }
 }
