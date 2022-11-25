@@ -36,6 +36,7 @@ export default function Home() {
       <main className={styles.main}>
         <h1 className={styles.title}>2022 카타르 월드컵 하이라이트 모음</h1>
         <p className={styles.description}>
+          스포일러 없는 제목으로 하이라이트를 더 재밌게!
         </p>
         <div className={styles.grid}>
           {videos.map((v) => (
