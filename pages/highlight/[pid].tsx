@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 import Player from "../../components/player";
 import { VideoStreamingData } from "../../domains/video";
 import styles from "../../styles/Home.module.css";
-import { getVideoStreaming } from "../api/video";
+import { convertToVideo, filterHighlight } from "../../utils/parser";
+import { getVideos, getVideoStreaming } from "../api/video";
 
 const options: Intl.DateTimeFormatOptions = {
   weekday: "long",
@@ -14,11 +15,7 @@ const options: Intl.DateTimeFormatOptions = {
   day: "numeric",
 };
 
-export default function Highlight({
-  url,
-  title,
-  gameDateTime,
-}: VideoStreamingData) {
+export default function Clip({ url, title, gameDateTime }: VideoStreamingData) {
   const router = useRouter();
 
   const t = new Date(gameDateTime);
@@ -46,7 +43,6 @@ export default function Highlight({
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      ``
       <main className={styles.main}>
         <Link href="/">
           <p>← 목록으로</p>
@@ -59,16 +55,36 @@ export default function Highlight({
   );
 }
 
-export async function getServerSideProps({
-  query: { pid },
-  res,
-}: GetServerSidePropsContext) {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=600, stale-while-revalidate=3600"
-  );
-  
+export async function getStaticPaths() {
+  const data = await getVideos({ page: 1, pageSize: 1000 });
+  const videos = convertToVideo(data);
+  const highlights = filterHighlight(videos);
+  const paths = highlights.map((h) => ({
+    params: {
+      pid: `${h.id}`,
+    },
+  }));
+
   return {
-    props: await getVideoStreaming(pid as string),
+    paths,
+    fallback: "blocking",
   };
 }
+
+export async function getStaticProps({ params }: GetServerSidePropsContext) {
+  return {
+    props: await getVideoStreaming(params?.pid as string),
+  };
+}
+// export async function getServerSideProps({
+//   query: { pid },
+//   res,
+// }: GetServerSidePropsContext) {
+//   res.setHeader(
+//     "Cache-Control",
+//     "public, s-maxage=600, stale-while-revalidate=3600"
+//   );
+//   return {
+//     props: await getVideoStreaming(pid as string),
+//   };
+// }

@@ -1,8 +1,10 @@
-export type VideoData = {
+export type Video = {
   sportsVideoId: string;
   title: string;
   produceDateTime: number;
   playTime: string;
+  page: number;
+  index: number;
 };
 
 export type VideoStreamingData = {
@@ -13,7 +15,7 @@ export type VideoStreamingData = {
 
 const threeHour: number = 3 * 60 * 60 * 1000;
 
-export class VideoMatchData {
+export class Highlight {
   broadcast?: string;
   countries: Array<string>;
   half?: string;
@@ -28,7 +30,7 @@ export class VideoMatchData {
     countries: Array<string>,
     half: string | undefined,
     group: string | undefined,
-    data: VideoData
+    data: Video
   ) {
     this.broadcast = broadcast;
     this.countries = countries;

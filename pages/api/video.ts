@@ -1,21 +1,26 @@
-import { VideoData, VideoStreamingData } from "../../domains/video";
+import { VideoStreamingData } from "../../domains/video";
 import { parseTitle } from "../../utils/parser";
 
 const listUrl =
-  "https://api-gw.sports.naver.com/video/lists/total?upperCategoryId=event&categoryId=qatar2022&page=1&pageSize=1000&sort=date&themeType=type&themeCode=2&fields=worldcup";
+  "https://api-gw.sports.naver.com/video/lists/total?upperCategoryId=event&categoryId=qatar2022&sort=date&themeType=type&themeCode=2&fields=worldcup";
+const proxyListURL =
+  "/videos/total?upperCategoryId=event&categoryId=qatar2022&sort=date&themeType=type&themeCode=2&fields=worldcup";
 
-export async function getVideos(): Promise<VideoData[]> {
-  var x = await fetch(listUrl).then((response) => response.json());
-  return x.result.videos.map(
-    (v: any) => {
-      return {
-        sportsVideoId: v.sportsVideoId,
-        title: v.title,
-        produceDateTime: v.produceDateTime,
-        playTime: v.playTime,
-      } as VideoData;
-    }
-  );
+interface GetVideosParams {
+  page?: number;
+  pageSize?: number;
+  useProxy?: boolean;
+}
+export async function getVideos({
+  page = 1,
+  pageSize = 20,
+  useProxy = false,
+}: GetVideosParams): Promise<any> {
+  return fetch(
+    useProxy
+      ? `${proxyListURL}&page=${page}&pageSize=${pageSize}`
+      : `${listUrl}&page=${page}&pageSize=${pageSize}`
+  ).then((response) => response.json());
 }
 
 const url2 = "https://api-gw.sports.naver.com/video";
@@ -33,7 +38,6 @@ export async function getVideoStreaming(
           (v: any) => v.encodingOption.name == "1080P"
         )[0].source
     );
-
 
   return {
     url: y,

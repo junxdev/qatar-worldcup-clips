@@ -1,4 +1,4 @@
-import { VideoData, VideoMatchData } from "../domains/video";
+import { Video, Highlight } from "../domains/video";
 
 const countries = [
   "카타르",
@@ -38,8 +38,10 @@ const countries = [
 const groups = ["A조", "B조", "C조", "D조", "E조", "F조", "G조", "H조"];
 
 const countriesReg = new RegExp(`(${countries.join("|")})(?!.*\\1)`, "g");
+
 function findCountries(title: string) {
-  var result = title.match(countriesReg);
+  var noQatarWorldcup = title.replaceAll(/카타르 월드컵|카타르월드컵/g, "");
+  var result = noQatarWorldcup.match(countriesReg);
 
   return result ?? [];
 }
@@ -63,23 +65,22 @@ function findBroadcast(title: string) {
   return result?.at(0);
 }
 
-function filterHighlight(videos: any) {
+function _filterHighlight(videos: Video[]): Video[] {
   return videos
     .filter((v: any) => /KBS|MBC|SBS/g.test(v.title))
-    .filter((v: any) => /하이라이트|H\\L/g.test(v.title));
+    .filter((v: any) => /하이라이트|H\\L/g.test(v.title))
+    .filter((v: any) => !/전반|승부차기/g.test(v.title));
 }
 
-function convertToVideoMatchData(videos: any) {
-  var result: Array<VideoMatchData> = [];
+function _filterFullHighlight(videos: any) {
+  var result: Array<Highlight> = [];
 
   videos.forEach((v: any) => {
-    var c = findCountries(
-      v.title.replaceAll(/카타르 월드컵|카타르월드컵/g, "")
-    );
+    var c = findCountries(v.title);
     if (c.length != 2) return;
 
     result.push(
-      new VideoMatchData(
+      new Highlight(
         findBroadcast(v.title),
         c,
         findHalf(v.title),
@@ -92,9 +93,9 @@ function convertToVideoMatchData(videos: any) {
   return result;
 }
 
-export function parseVideo(videos: VideoData[]) {
-  var v2 = filterHighlight(videos);
-  var v3 = convertToVideoMatchData(v2);
+export function filterHighlight(videos: Video[]) {
+  var v2 = _filterHighlight(videos);
+  var v3 = _filterFullHighlight(v2);
   return v3;
 }
 
@@ -107,3 +108,14 @@ export function parseTitle(title: string) {
     .filter((v) => v != undefined)
     .join(" ");
 }
+
+export const convertToVideo = (data: any): Video[] => {
+  return data.result.videos.map((v: any) => {
+    return {
+      sportsVideoId: v.sportsVideoId,
+      title: v.title,
+      produceDateTime: v.produceDateTime,
+      playTime: v.playTime,
+    } as Video;
+  });
+};
