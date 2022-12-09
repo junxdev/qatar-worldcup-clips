@@ -23,9 +23,12 @@ export async function getStreamingData(pid: string): Promise<StreamingData> {
 }
 
 const streamingURLMap = {
-  "https://naver-sbs-h.smartmediarep.com": "/api/highlights/sbs",
-  "https://naver-kbs-h.smartmediarep.com": "/api/highlights/kbs",
-  "https://naver-mbc-h.smartmediarep.com": "/api/highlights/mbc",
+  // "https://naver-sbs-h.smartmediarep.com": "/api/highlights/sbs",
+  // "https://naver-kbs-h.smartmediarep.com": "/api/highlights/kbs",
+  // "https://naver-mbc-h.smartmediarep.com": "/api/highlights/mbc",
+  "https://naver-sbs-h.smartmediarep.com": "sbs",
+  "https://naver-kbs-h.smartmediarep.com": "kbs",
+  "https://naver-mbc-h.smartmediarep.com": "mbc",
 };
 
 const replaceStreamingURL = (url: string) => {
