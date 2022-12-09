@@ -5,7 +5,7 @@ import Link from "next/link";
 import { filterHighlight } from "../utils/parser";
 import { useEffect } from "react";
 
-export const VideoList = () => {
+export const HighlightList = () => {
   const { videos, hasMore, next, lastScrollY, saveScrollY } = useVideoStore();
   const highlights = filterHighlight(videos);
 

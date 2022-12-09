@@ -1,6 +1,6 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import { VideoList } from "../components/HighlightList";
+import { HighlightList } from "../components/HighlightList";
 
 export default function ClipsPage() {
   return (
@@ -25,7 +25,7 @@ export default function ClipsPage() {
         <p className={styles.description}>
           스포일러 없는 제목으로 하이라이트를 더 재밌게!
         </p>
-        {<VideoList />}
+        {<HighlightList />}
       </main>
     </div>
   );
