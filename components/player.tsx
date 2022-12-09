@@ -5,11 +5,13 @@ type Props = {
   url: string;
 };
 
+
 export default function Player({ url }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   function renderVideo(url: string) {
     if (!videoRef.current) return;
+    
     if (Hls.isSupported()) {
       var hls = new Hls();
 

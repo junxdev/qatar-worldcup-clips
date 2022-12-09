@@ -38,10 +38,23 @@ export async function getVideoStreaming(
           (v: any) => v.encodingOption.name == "1080P"
         )[0].source
     );
-
+    
   return {
-    url: y,
+    url: replaceStreamingURL(y),
     title: parseTitle(x.result.title),
     gameDateTime: x.result.gameDateTime,
   } as VideoStreamingData;
 }
+
+const streamingURLMap = {
+  "https://naver-sbs-h.smartmediarep.com": "sbs",
+  "https://naver-kbs-h.smartmediarep.com": "kbs",
+  "https://naver-mbc-h.smartmediarep.com": "mbc",
+};
+
+const replaceStreamingURL = (url: string) => {
+  Object.entries(streamingURLMap).forEach(([origin, api]) => {
+    url = url.replace(origin, api);
+  });
+  return url;
+};
