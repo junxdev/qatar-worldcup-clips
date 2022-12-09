@@ -3,7 +3,7 @@ import { useVideoStore } from "../utils/persistence/videos-store";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 import { filterHighlight } from "../utils/parser";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export const VideoList = () => {
   const { videos, hasMore, next, lastScrollY, saveScrollY } = useVideoStore();
@@ -30,7 +30,7 @@ export const VideoList = () => {
             return (
               <Link
                 key={v.id}
-                href={`/highlight/${v.id}`}
+                href={`/highlights/${v.id}`}
                 onClick={() => saveScrollY(window.pageYOffset)}
               >
                 <div className={styles.card}>

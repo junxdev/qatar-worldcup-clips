@@ -109,7 +109,7 @@ export function parseTitle(title: string) {
     .join(" ");
 }
 
-export const convertToVideo = (data: any): Video[] => {
+export const jsonToVideos = (data: any): Video[] => {
   return data.result.videos.map((v: any) => {
     return {
       sportsVideoId: v.sportsVideoId,

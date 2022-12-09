@@ -1,8 +1,7 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { Video } from "../../domains/video";
-import { getVideos } from "../../pages/api/video";
-import { convertToVideo } from "../parser";
+import { jsonToVideos } from "../parser";
 
 interface VideoState {
   videos: Video[];
@@ -30,17 +29,16 @@ export const useVideoStore = create<VideoState>()(
         },
         next: async () => {
           const page = Math.ceil(get().videos.length / pageSize) + 1;
-          const data = await getVideos({
-            page: page,
-            pageSize: pageSize,
-            useProxy: true,
-          });
-          const newVideos = convertToVideo(data);
+          const result = await fetch(
+            `/api/videos?page=${page}&pageSize=${pageSize}`
+          ).then((r) => r.json());
+          const newVideos = jsonToVideos(result);
           set((state) => {
             return {
               videos: [...state.videos, ...newVideos],
               hasMore:
-                state.videos.length + newVideos.length < data.result.totalCount,
+                state.videos.length + newVideos.length <
+                result.result.totalCount,
             };
           });
         },

@@ -1,6 +1,6 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import { VideoList } from "../components/VideoList";
+import { VideoList } from "../components/HighlightList";
 
 export default function ClipsPage() {
   return (

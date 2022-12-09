@@ -2,11 +2,12 @@ import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Player from "../../components/player";
+import Player from "../../components/Player";
 import { VideoStreamingData } from "../../domains/video";
 import styles from "../../styles/Home.module.css";
-import { convertToVideo, filterHighlight } from "../../utils/parser";
-import { getVideos, getVideoStreaming } from "../api/video";
+import { jsonToVideos, filterHighlight } from "../../utils/parser";
+import { getStreamingData } from "../api/videos/streaming";
+import { getVideos } from "../api/videos";
 
 const options: Intl.DateTimeFormatOptions = {
   weekday: "long",
@@ -57,7 +58,7 @@ export default function Clip({ url, title, gameDateTime }: VideoStreamingData) {
 
 export async function getStaticPaths() {
   const data = await getVideos({ page: 1, pageSize: 1000 });
-  const videos = convertToVideo(data);
+  const videos = jsonToVideos(data);
   const highlights = filterHighlight(videos);
   const paths = highlights.map((h) => ({
     params: {
@@ -73,6 +74,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }: GetServerSidePropsContext) {
   return {
-    props: await getVideoStreaming(params?.pid as string),
+    props: await getStreamingData(params?.pid as string),
   };
 }
