@@ -56,23 +56,9 @@ export default function Clip({ url, title, gameDateTime }: VideoStreamingData) {
   );
 }
 
-export async function getStaticPaths() {
-  const data = await getVideos({ page: 1, pageSize: 1000 });
-  const videos = jsonToVideos(data);
-  const highlights = filterHighlight(videos);
-  const paths = highlights.map((h) => ({
-    params: {
-      pid: `${h.id}`,
-    },
-  }));
-
-  return {
-    paths,
-    fallback: "blocking",
-  };
-}
-
-export async function getStaticProps({ params }: GetServerSidePropsContext) {
+export async function getServerSideProps({
+  params,
+}: GetServerSidePropsContext) {
   return {
     props: await getStreamingData(params?.pid as string),
   };
