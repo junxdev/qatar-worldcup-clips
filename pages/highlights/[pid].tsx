@@ -57,8 +57,14 @@ export default function Clip({ url, title, gameDateTime }: VideoStreamingData) {
 }
 
 export async function getServerSideProps({
+  res,
   params,
 }: GetServerSidePropsContext) {
+  res.setHeader(
+    "Cache-Control",
+    "public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600"
+  );
+
   return {
     props: await getStreamingData(params?.pid as string),
   };
