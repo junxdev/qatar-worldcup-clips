@@ -1,10 +1,10 @@
 export type Video = {
   sportsVideoId: string;
   title: string;
-  produceDateTime: number;
+  produceDateTime: string;
   playTime: string;
-  page: number;
-  index: number;
+  // page: number;
+  // index: number;
 };
 
 export type VideoStreamingData = {

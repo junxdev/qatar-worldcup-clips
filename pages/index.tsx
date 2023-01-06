@@ -6,7 +6,7 @@ export default function ClipsPage() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>NoSpoCup</title>
+        <title>Qatar Clips</title>
         <meta
           name="description"
           content="Watch 2022 Qatar World Cup clips without any spoiler"

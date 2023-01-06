@@ -31,7 +31,7 @@ export default function Clip({ url, title, gameDateTime }: VideoStreamingData) {
   return (
     <div className={styles.container}>
       <Head>
-        <title>{`NoSpoCup: ${title}`}</title>
+        <title>{`Qatar Clips: ${title}`}</title>
         <meta name="description" content={`${title}(${gameDateTime})`} />
         <meta property="og:title" content={`${title}(${gameDateTime})`} />
         <meta
